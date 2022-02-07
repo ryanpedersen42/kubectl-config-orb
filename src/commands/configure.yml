@@ -46,7 +46,7 @@ steps:
         PARAM_TOKEN: << parameters.token >>
         PARAM_CERT: << parameters.cert >>
         PARAM_SERVER_ENDPOINT: << parameters.server_endpoint >>
-        PARAM_CLUSTER_NAME: << parameters.cluster_endpoint >>
+        PARAM_CLUSTER_NAME: << parameters.cluster_name >>
         PARAM_USER_NAME: << parameters.user_name >>
         PARAM_NAMESPACE: << parameters.namespace >>
         PARAM_CONTEXT: << parameters.context >>
