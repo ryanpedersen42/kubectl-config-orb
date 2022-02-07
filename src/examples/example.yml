@@ -18,5 +18,5 @@ usage:
         - kubectl-config/configure
   executors:
     base:
-      docker: 
+      docker:
         - image: cimg/base:stable
