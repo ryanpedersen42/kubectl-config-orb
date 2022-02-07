@@ -1,13 +1,22 @@
 description: >
-  Sample example description.
-# Provide a use-case based example for using this orb.
-# Everything in the `usage` section will be displayed in the orb registry.
-# Comments are not retained.
+  Connecting to cluster
 usage:
   version: 2.1
   orbs:
-    <orb-name>: <namespace>/<orb-name>@1.2.3
+    kubectl-config: ryanpedersen/kubectl-config@0.1.0
+    kubernetes: circleci/kubernetes@0.11.2
   workflows:
-    use-my-orb:
+    connect-to-cluster:
       jobs:
-        - <orb-name>/<job-name>
+        - cluster-actions
+  jobs:
+    cluster-actions:
+      executor: base
+      steps:
+        - checkout
+        - kubernetes/install-kubectl
+        - kubectl-config/configure
+  executors:
+    base:
+      docker: 
+        - image: cimg/base:stable

@@ -1,0 +1,64 @@
+description: >
+  This command runs kubectl config with your SA for your cluster
+
+parameters:
+  token:
+    type: env_var_name
+    default: TOKEN
+    description: "Service Account token"
+  cert:
+    type: env_var_name
+    default: CA_CERT
+    description: "Cert to be base64 decoded"
+  server_endpoint:
+    type: env_var_name
+    default: SERVER_ENDPOINT
+    description: "Server endpoint for cluster"
+  cluster_name:
+    type: string
+    description: "Name of your cluster"
+  user_name:
+    type: string
+    description: "Name of your SA user"
+    default: circleci
+  namespace:
+    type: string
+    description: "Namespace target"
+  context:
+    type: string
+    description: "Context name"
+    default: cci
+steps:
+  - run:
+      name: Check for env vars
+      command: |
+          : "${<<parameters.token>>?Token \
+          must be set as Environment variable before running this command.}"
+          : "${<<parameters.cert>>?Cert \
+          must be set as Environment variable before running this command.}"
+          : "${<<parameters.server_endpoint>>?Server Endpoint \
+          must be set as Environment variable before running this command.}"
+          : "${<<parameters.cluster_name>>?Cluster Name \
+          must be set as Environment variable before running this command.}"
+  - run: 
+      name: kubectl config
+      environment:
+        PARAM_TOKEN: << parameters.token >>
+        PARAM_CERT: << parameters.cert >>
+        PARAM_SERVER_ENDPOINT: << parameters.server_endpoint >>
+        PARAM_CLUSTER_NAME: << parameters.cluster_endpoint >>
+        PARAM_USER_NAME: << parameters.user_name >>
+        PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_CONTEXT: << parameters.context >>
+
+      command: |
+        if [ -n "${PARAM_NAMESPACE}" ]; then
+          set -- "$@" --namespace="${PARAM_NAMESPACE}"
+        fi
+
+        export DECODED_TOKEN=$(echo ${PARAM_TOKEN} | base64 -d)
+        echo $CA_CERT | base64 -d > ca.crt
+        kubectl config set-cluster ${PARAM_CLUSTER_NAME} --server=${PARAM_SERVER_ENDPOINT} --certificate-authority=ca.crt
+        kubectl config set-credentials ${PARAM_USER_NAME} --token=${DECODED_TOKEN}
+        kubectl config set-context ${PARAM_CONTEXT} --user=${PARAM_USER_NAME} --cluster=${PARAM_CLUSTER_NAME} "$@"
+        kubectl config use-context ${PARAM_CONTEXT}
