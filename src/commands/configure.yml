@@ -62,4 +62,3 @@ steps:
         kubectl config set-credentials ${PARAM_USER_NAME} --token=${DECODED_TOKEN}
         kubectl config set-context ${PARAM_CONTEXT} --user=${PARAM_USER_NAME} --cluster=${PARAM_CLUSTER_NAME} "$@"
         kubectl config use-context ${PARAM_CONTEXT}
-        
