@@ -15,7 +15,9 @@ usage:
       steps:
         - checkout
         - kubernetes/install-kubectl
-        - kubectl-config/configure
+        - kubectl-config/configure:
+            cluster-name: eks-99999
+            namespace: production
   executors:
     base:
       docker:
