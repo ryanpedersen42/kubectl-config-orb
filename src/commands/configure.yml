@@ -57,7 +57,7 @@ steps:
         fi
 
         export DECODED_TOKEN=$(echo ${PARAM_TOKEN} | base64 -d)
-        echo $CA_CERT | base64 -d > ca.crt
+        echo $PARAM_CERT | base64 -d > ca.crt
         kubectl config set-cluster ${PARAM_CLUSTER_NAME} --server=${PARAM_SERVER_ENDPOINT} --certificate-authority=ca.crt
         kubectl config set-credentials ${PARAM_USER_NAME} --token=${DECODED_TOKEN}
         kubectl config set-context ${PARAM_CONTEXT} --user=${PARAM_USER_NAME} --cluster=${PARAM_CLUSTER_NAME} "$@"
