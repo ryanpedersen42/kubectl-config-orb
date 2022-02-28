@@ -43,9 +43,6 @@ steps:
   - run:
       name: kubectl config
       environment:
-        PARAM_TOKEN: << parameters.token >>
-        PARAM_CERT: << parameters.cert >>
-        PARAM_SERVER_ENDPOINT: << parameters.server_endpoint >>
         PARAM_CLUSTER_NAME: << parameters.cluster_name >>
         PARAM_USER_NAME: << parameters.user_name >>
         PARAM_NAMESPACE: << parameters.namespace >>
@@ -56,9 +53,9 @@ steps:
           set -- "$@" --namespace="${PARAM_NAMESPACE}"
         fi
 
-        export DECODED_TOKEN=$(echo ${PARAM_TOKEN} | base64 -d)
-        echo $CA_CERT | base64 -d > ca.crt
-        kubectl config set-cluster ${PARAM_CLUSTER_NAME} --server=${PARAM_SERVER_ENDPOINT} --certificate-authority=ca.crt
+        export DECODED_TOKEN=$(echo ${<< parameters.token >>} | base64 -d)
+        echo ${<< parameters.cert >>} | base64 -d > ca.crt
+        kubectl config set-cluster ${PARAM_CLUSTER_NAME} --server=${<< parameters.server_endpoint >>} --certificate-authority=ca.crt
         kubectl config set-credentials ${PARAM_USER_NAME} --token=${DECODED_TOKEN}
         kubectl config set-context ${PARAM_CONTEXT} --user=${PARAM_USER_NAME} --cluster=${PARAM_CLUSTER_NAME} "$@"
         kubectl config use-context ${PARAM_CONTEXT}
